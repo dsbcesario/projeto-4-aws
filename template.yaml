@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: API Serverless de processamento de pedidos
+
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: python3.12
+    MemorySize: 128
+
+Resources:
+  # Tabela DynamoDB que guarda os pedidos
+  TabelaPedidos:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: pedidos
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  # Função Lambda que processa os pedidos
+  FuncaoPedidos:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: handler.handler
+      Environment:
+        Variables:
+          TABELA_PEDIDOS: !Ref TabelaPedidos
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TabelaPedidos
+      Events:
+        CriarPedido:
+          Type: Api
+          Properties:
+            Path: /pedidos
+            Method: post
