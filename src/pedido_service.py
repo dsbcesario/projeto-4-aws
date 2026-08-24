@@ -1,6 +1,8 @@
+# src/pedido_service.py
 import boto3
 import os
 import uuid
+from decimal import Decimal
 
 # Tabela DynamoDB (nome vem do ambiente, definido no template.yaml)
 TABELA = os.getenv("TABELA_PEDIDOS", "pedidos")
@@ -42,5 +44,11 @@ def salvar_pedido(dados: dict) -> dict:
         "itens": dados["itens"],
         "total": calcular_total(dados["itens"]),
     }
+    # Converte valores numéricos para Decimal (exigência do DynamoDB)
+    pedido["total"] = Decimal(str(pedido["total"]))
+    for item in pedido["itens"]:
+        item["preco"] = Decimal(str(item["preco"]))
+        item["quantidade"] = Decimal(str(item["quantidade"]))
+
     tabela.put_item(Item=pedido)
     return pedido
