@@ -16,15 +16,25 @@ integração de serviços e infraestrutura como código.
 
 ## 📂 Estrutura
 ├── src/
+
 │   ├── handler.py         # Função Lambda principal
+
 │   └── pedido_service.py  # Lógica de negócio
+
 ├── template.yaml          # Definição da infraestrutura (SAM)
+
 ├── tests/
+
 │   └── test_handler.py    # Testes da função
+
 ├── events/
+
 │   └── evento-exemplo.json # Payload para teste local
+
 ├── requirements.txt       # Dependências Python
+
 ├── conftest.py            # Configuração do ambiente de testes
+
 └── README.md
 
 ## 🚀 Como rodar localmente
